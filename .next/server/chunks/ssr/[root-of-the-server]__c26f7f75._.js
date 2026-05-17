@@ -1,0 +1,337 @@
+module.exports = [
+"[project]/.next-internal/server/app/blog/page/actions.js [app-rsc] (server actions loader, ecmascript)", ((__turbopack_context__, module, exports) => {
+
+}),
+"[project]/src/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", ((__turbopack_context__) => {
+
+__turbopack_context__.n(__turbopack_context__.i("[project]/src/app/layout.tsx [app-rsc] (ecmascript)"));
+}),
+"[project]/src/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", ((__turbopack_context__) => {
+
+__turbopack_context__.n(__turbopack_context__.i("[project]/src/app/not-found.tsx [app-rsc] (ecmascript)"));
+}),
+"[project]/src/lib/api/client.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "API_URL",
+    ()=>API_URL,
+    "apiFetch",
+    ()=>apiFetch
+]);
+const API_URL = ("TURBOPACK compile-time value", "http://127.0.0.1:8000/api/v1") || 'http://localhost:8000/api/v1';
+async function apiFetch(path, options = {}) {
+    const res = await fetch(`${API_URL}${path}`, {
+        headers: {
+            Accept: 'application/json'
+        },
+        next: options.next
+    });
+    if (!res.ok) {
+        if (res.status === 404) return null;
+        throw new Error(`API error ${res.status}: ${path}`);
+    }
+    return res.json();
+}
+;
+}),
+"[project]/src/lib/api/queries.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "getAllCategories",
+    ()=>getAllCategories,
+    "getAllPostSlugs",
+    ()=>getAllPostSlugs,
+    "getAllPosts",
+    ()=>getAllPosts,
+    "getFeaturedPosts",
+    ()=>getFeaturedPosts,
+    "getLatestPosts",
+    ()=>getLatestPosts,
+    "getPostBySlug",
+    ()=>getPostBySlug,
+    "getPostsByCategory",
+    ()=>getPostsByCategory,
+    "getPostsForRSS",
+    ()=>getPostsForRSS,
+    "getRelatedPosts",
+    ()=>getRelatedPosts,
+    "searchPosts",
+    ()=>searchPosts
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/api/client.ts [app-rsc] (ecmascript)");
+;
+// ─── Transform helpers ────────────────────────────────────────────────────────
+// The frontend uses Sanity-style `slug: { current: string }`. We map the flat
+// `slug` string from the Laravel API to keep all components unchanged.
+function mapCategory(c) {
+    return {
+        _id: String(c.id),
+        title: c.title,
+        slug: {
+            current: c.slug
+        },
+        description: c.description ?? undefined,
+        color: c.color ?? undefined,
+        postCount: c.post_count ?? undefined
+    };
+}
+function mapAuthor(a) {
+    return {
+        _id: String(a.id),
+        name: a.name,
+        slug: {
+            current: a.slug
+        },
+        bio: undefined,
+        twitter: a.twitter ?? undefined,
+        github: a.github ?? undefined,
+        website: a.website ?? undefined,
+        image: a.avatar ? {
+            url: a.avatar
+        } : undefined
+    };
+}
+function mapPost(p) {
+    return {
+        _id: String(p.id),
+        title: p.title,
+        slug: {
+            current: p.slug
+        },
+        excerpt: p.excerpt ?? undefined,
+        coverImage: p.cover_image ? {
+            url: p.cover_image
+        } : undefined,
+        publishedAt: p.published_at,
+        updatedAt: p.updated_at ?? undefined,
+        body: p.body ?? undefined,
+        categories: p.categories ? p.categories.map(mapCategory) : undefined,
+        author: p.author ? mapAuthor(p.author) : undefined,
+        tags: p.tags ?? [],
+        readingTime: p.reading_time ?? undefined,
+        featured: p.featured ?? false,
+        seo: p.seo ? {
+            metaTitle: p.seo.title ?? undefined,
+            metaDescription: p.seo.description ?? undefined
+        } : undefined
+    };
+}
+async function getAllPosts() {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])('/posts', {
+        next: {
+            revalidate: 60
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getFeaturedPosts(limit = 1) {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts?featured=1&limit=${limit}`, {
+        next: {
+            revalidate: 60
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getLatestPosts(limit = 6) {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts?limit=${limit}`, {
+        next: {
+            revalidate: 60
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getPostBySlug(slug) {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts/${slug}`, {
+        next: {
+            revalidate: 60
+        }
+    });
+    if (!data) return null;
+    const post = data.data ?? data;
+    return mapPost(post);
+}
+async function getPostsByCategory(categorySlug) {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts?category=${categorySlug}`, {
+        next: {
+            revalidate: 60
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getRelatedPosts(_postId, _categoryIds, _limit = 3, slug) {
+    if (!slug) return [];
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts/${slug}/related`, {
+        next: {
+            revalidate: 60
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getAllPostSlugs() {
+    const slugs = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])('/posts/slugs', {
+        next: {
+            revalidate: 3600
+        }
+    });
+    return (slugs ?? []).map((s)=>({
+            slug: {
+                current: s
+            }
+        }));
+}
+async function getPostsForRSS() {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])('/posts?limit=20', {
+        next: {
+            revalidate: 3600
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function searchPosts(query) {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])(`/posts?search=${encodeURIComponent(query)}`, {
+        next: {
+            revalidate: 0
+        }
+    });
+    return (data?.data ?? []).map(mapPost);
+}
+async function getAllCategories() {
+    const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["apiFetch"])('/categories', {
+        next: {
+            revalidate: 300
+        }
+    });
+    return (data?.data ?? []).map(mapCategory);
+}
+}),
+"[project]/src/app/blog/blog-client.tsx [app-rsc] (client reference proxy) <module evaluation>", ((__turbopack_context__) => {
+"use strict";
+
+// This file is generated by next-core EcmascriptClientReferenceModule.
+__turbopack_context__.s([
+    "BlogClient",
+    ()=>BlogClient
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const BlogClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call BlogClient() from the server but BlogClient is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/src/app/blog/blog-client.tsx <module evaluation>", "BlogClient");
+}),
+"[project]/src/app/blog/blog-client.tsx [app-rsc] (client reference proxy)", ((__turbopack_context__) => {
+"use strict";
+
+// This file is generated by next-core EcmascriptClientReferenceModule.
+__turbopack_context__.s([
+    "BlogClient",
+    ()=>BlogClient
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.js [app-rsc] (ecmascript)");
+;
+const BlogClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$server$2d$dom$2d$turbopack$2d$server$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["registerClientReference"])(function() {
+    throw new Error("Attempted to call BlogClient() from the server but BlogClient is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.");
+}, "[project]/src/app/blog/blog-client.tsx", "BlogClient");
+}),
+"[project]/src/app/blog/blog-client.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$blog$2f$blog$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__$3c$module__evaluation$3e$__ = __turbopack_context__.i("[project]/src/app/blog/blog-client.tsx [app-rsc] (client reference proxy) <module evaluation>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$blog$2f$blog$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__ = __turbopack_context__.i("[project]/src/app/blog/blog-client.tsx [app-rsc] (client reference proxy)");
+;
+__turbopack_context__.n(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$blog$2f$blog$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$client__reference__proxy$29$__);
+}),
+"[project]/src/app/blog/page.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>BlogPage,
+    "metadata",
+    ()=>metadata
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react.js [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/lib/api/queries.ts [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$blog$2f$blog$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/blog/blog-client.tsx [app-rsc] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$container$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/layout/container.tsx [app-rsc] (ecmascript)");
+;
+;
+;
+;
+;
+const metadata = {
+    title: 'Blog',
+    description: 'All posts — tech, life, and career thoughts.'
+};
+async function BlogPage() {
+    const [posts, categories] = await Promise.all([
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAllPosts"])(),
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$api$2f$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["getAllCategories"])()
+    ]);
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$layout$2f$container$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Container"], {
+        className: "py-16",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                className: "mb-2 text-3xl font-bold tracking-tight",
+                children: "Blog"
+            }, void 0, false, {
+                fileName: "[project]/src/app/blog/page.tsx",
+                lineNumber: 17,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "mb-10 text-muted-foreground",
+                children: [
+                    posts.length,
+                    " post",
+                    posts.length !== 1 ? 's' : ''
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/blog/page.tsx",
+                lineNumber: 18,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["Suspense"], {
+                fallback: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    children: "Loading..."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/blog/page.tsx",
+                    lineNumber: 21,
+                    columnNumber: 27
+                }, void 0),
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$blog$2f$blog$2d$client$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["BlogClient"], {
+                    initialPosts: posts,
+                    categories: categories
+                }, void 0, false, {
+                    fileName: "[project]/src/app/blog/page.tsx",
+                    lineNumber: 22,
+                    columnNumber: 9
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/src/app/blog/page.tsx",
+                lineNumber: 21,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/app/blog/page.tsx",
+        lineNumber: 16,
+        columnNumber: 5
+    }, this);
+}
+}),
+"[project]/src/app/blog/page.tsx [app-rsc] (ecmascript, Next.js Server Component)", ((__turbopack_context__) => {
+
+__turbopack_context__.n(__turbopack_context__.i("[project]/src/app/blog/page.tsx [app-rsc] (ecmascript)"));
+}),
+"[externals]/next/dist/shared/lib/no-fallback-error.external.js [external] (next/dist/shared/lib/no-fallback-error.external.js, cjs)", ((__turbopack_context__, module, exports) => {
+
+const mod = __turbopack_context__.x("next/dist/shared/lib/no-fallback-error.external.js", () => require("next/dist/shared/lib/no-fallback-error.external.js"));
+
+module.exports = mod;
+}),
+];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__c26f7f75._.js.map
