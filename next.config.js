@@ -12,6 +12,11 @@ const nextConfig = {
         port: '8000',
         pathname: '/storage/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cms.ikagi.site',
+        pathname: '/storage/**',
+      },
     ],
   },
 }

@@ -1,11 +1,11 @@
 export const siteConfig = {
-  name: 'My Blog',
+  name: 'Ikagi Blog',
   description: 'Writing about tech, life, and everything in between.',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com',
+  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.ikagi.site',
   author: {
-    name: 'Your Name',
-    twitter: '@yourhandle',
-    github: 'yourgithub',
+    name: 'Nguyễn Khắc Hòa',
+    twitter: '@ikagi',
+    github: 'ikagi',
   },
   nav: [
     { label: 'Blog', href: '/blog' },
