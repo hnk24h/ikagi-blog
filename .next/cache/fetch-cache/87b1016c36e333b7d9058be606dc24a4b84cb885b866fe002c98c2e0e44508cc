@@ -1,1 +1,0 @@
-{"kind":"FETCH","data":{"headers":{"cache-control":"no-cache, private","connection":"close","content-type":"application/json","date":"Sun, 17 May 2026 07:28:59 GMT","host":"localhost:8000","vary":"Origin","x-powered-by":"PHP/8.3.6"},"body":"eyJkYXRhIjpbXX0=","status":200,"url":"http://localhost:8000/api/v1/posts/test-01/related"},"revalidate":60,"tags":[]}
