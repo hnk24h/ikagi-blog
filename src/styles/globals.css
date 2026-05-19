@@ -20,6 +20,12 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
+
+    /* Brand / accent colors — change here to retheme the whole site */
+    --brand: 43 96% 56%;           /* amber-400  */
+    --brand-dark: 25 95% 53%;      /* orange-500 */
+    --brand-glow: 45 97% 65%;      /* amber-300  */
+    --brand-fg: 0 0% 100%;         /* text on brand bg */
   }
 
   .dark {
@@ -38,6 +44,12 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+
+    /* Brand stays the same in dark mode, can override here */
+    --brand: 43 96% 62%;
+    --brand-dark: 25 95% 58%;
+    --brand-glow: 45 97% 70%;
+    --brand-fg: 0 0% 100%;
   }
 
   * {

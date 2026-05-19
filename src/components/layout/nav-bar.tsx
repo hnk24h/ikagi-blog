@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { ThemeToggle } from '@/components/common/theme-toggle'
+import { SearchBar } from '@/components/layout/search-bar'
 import { siteConfig } from '@/config/site'
 import { cn } from '@/lib/utils'
 import type { Category } from '@/types/blog'
@@ -56,12 +57,6 @@ export function NavBar({ menuCategories }: NavBarProps) {
 
   return (
     <nav className="flex items-center gap-1">
-      {/* Static nav links */}
-      {siteConfig.nav.map((item) => (
-        <Link key={item.href} href={item.href} className={linkCls(item.href)}>
-          {item.label}
-        </Link>
-      ))}
 
       {/* Category groups as hover dropdowns */}
       {groups.map((group) => {
@@ -104,8 +99,16 @@ export function NavBar({ menuCategories }: NavBarProps) {
           {cat.title}
         </Link>
       ))}
+      
+      {/* Static nav links */}
+      {siteConfig.nav.map((item) => (
+        <Link key={item.href} href={item.href} className={linkCls(item.href)}>
+          {item.label}
+        </Link>
+      ))}
 
-      <div className="ml-2">
+      <div className="ml-2 flex items-center gap-1">
+        <SearchBar />
         <ThemeToggle />
       </div>
     </nav>

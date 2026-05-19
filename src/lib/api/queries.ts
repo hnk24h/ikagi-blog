@@ -1,4 +1,4 @@
-import type { Post, Category, Author } from '@/types/blog'
+import type { Post, Category, Author, NowPage } from '@/types/blog'
 import { apiFetch } from './client'
 
 // ─── Transform helpers ────────────────────────────────────────────────────────
@@ -119,6 +119,14 @@ export async function getRelatedPosts(
   return (data?.data ?? []).map(mapPost)
 }
 
+export async function getPostsByAuthor(authorSlug: string, limit = 5): Promise<Post[]> {
+  const data = await apiFetch<{ data: Record<string, unknown>[] }>(
+    `/posts?author=${encodeURIComponent(authorSlug)}&limit=${limit}`,
+    { next: { revalidate: 60 } },
+  )
+  return (data?.data ?? []).map(mapPost)
+}
+
 export async function getAllPostSlugs(): Promise<{ slug: { current: string } }[]> {
   const slugs = await apiFetch<string[]>('/posts/slugs', {
     next: { revalidate: 3600 },
@@ -154,4 +162,13 @@ export async function getAllCategories(): Promise<Category[]> {
 export async function getMenuCategories(): Promise<Category[]> {
   const all = await getAllCategories()
   return all.filter((c) => c.isMenu)
+}
+
+// ─── Now Page ─────────────────────────────────────────────────────────────────
+
+export async function getNowPage(): Promise<NowPage | null> {
+  const data = await apiFetch<{ data: NowPage }>('/now', {
+    next: { revalidate: 300 },
+  })
+  return data?.data ?? null
 }

@@ -55,3 +55,18 @@ export interface SanityImage {
 
 // Re-export for convenience
 export type { PTBlock as PortableTextBlock }
+
+export interface NowFocusItem   { icon?: string; text: string }
+export interface NowReadingItem { title: string; author?: string; type?: string; url?: string }
+export interface NowLearningItem{ text: string }
+export interface NowVocabItem   { word: string; reading?: string; meaning: string; type?: string; example?: string }
+
+export interface NowPage {
+  location?: string
+  status?: string
+  focus: NowFocusItem[]
+  reading: NowReadingItem[]
+  learning: NowLearningItem[]
+  vocabulary: NowVocabItem[]
+  content_updated_at?: string
+}

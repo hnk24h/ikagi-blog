@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import type { Metadata } from 'next'
-import { getPostBySlug, getAllPostSlugs, getRelatedPosts } from '@/lib/api/queries'
+import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getPostsByAuthor } from '@/lib/api/queries'
 import { urlFor } from '@/lib/api/image'
-import { AuthorCard } from '@/components/post/author-card'
 import { RelatedPosts } from '@/components/post/related-posts'
 import { ShareButtons } from '@/components/post/share-buttons'
 import { TableOfContents } from '@/components/post/table-of-contents'
+import { AuthorChip } from '@/components/post/author-chip'
 import { Container } from '@/components/layout/container'
 import { formatDate } from '@/lib/utils'
 import { siteConfig } from '@/config/site'
@@ -45,7 +45,12 @@ export default async function PostPage({ params }: Props) {
   if (!post) notFound()
 
   const categoryIds = post.categories?.map((c) => c._id) ?? []
-  const related = await getRelatedPosts(post._id, categoryIds, 3, post.slug.current)
+  const authorSlug = post.author?.slug?.current ?? ''
+
+  const [related, authorPosts] = await Promise.all([
+    getRelatedPosts(post._id, categoryIds, 3, post.slug.current),
+    authorSlug ? getPostsByAuthor(authorSlug, 5) : Promise.resolve([]),
+  ])
 
   const postUrl = `${siteConfig.url}/blog/${post.slug.current}`
 
@@ -73,33 +78,71 @@ export default async function PostPage({ params }: Props) {
         <div className="grid grid-cols-1 gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_240px]">
           {/* ── Main content ── */}
           <div className="min-w-0">
-            {/* Categories */}
-            {post.categories && post.categories.length > 0 && (
-              <div className="mb-4 flex flex-wrap gap-2">
-                {post.categories.map((cat) => (
-                  <Link
-                    key={cat._id}
-                    href={`/blog?category=${cat.slug.current}`}
-                    className="rounded-full bg-muted px-3 py-1 text-xs font-medium hover:bg-muted/80"
-                  >
-                    {cat.title}
-                  </Link>
-                ))}
+            {/* ── Row 1: Categories + Tags + Author chip ── */}
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex flex-col gap-2">
+                {/* Categories */}
+                {post.categories && post.categories.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {post.categories.map((cat) => (
+                      <Link
+                        key={cat._id}
+                        href={`/blog?category=${cat.slug.current}`}
+                        className="rounded-full bg-muted px-3 py-1 text-xs font-medium hover:bg-muted/80"
+                      >
+                        {cat.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {/* Tags */}
+                {post.tags && post.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {post.tags.map((tag) => (
+                      <Link
+                        key={tag}
+                        href={`/blog?search=${encodeURIComponent(tag)}`}
+                        className="inline-flex items-center gap-0.5 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-0.5 text-xs font-medium text-brand transition-colors hover:bg-brand/20"
+                      >
+                        <span className="opacity-50">#</span>{tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+              {post.author && (
+                <AuthorChip
+                  author={post.author}
+                  authorPosts={authorPosts}
+                  currentPostId={post._id}
+                />
+              )}
+            </div>
 
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
               {post.title}
             </h1>
 
             {post.excerpt && (
-              <p className="mt-4 text-lg text-muted-foreground">{post.excerpt}</p>
+              <blockquote className="mt-6 rounded-xl border-l-4 border-brand bg-muted/40 px-5 py-4">
+                <p className="text-base leading-relaxed text-foreground/80 italic">
+                  {post.excerpt}
+                </p>
+              </blockquote>
             )}
 
-            <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {post.author && <span>{post.author.name}</span>}
-              <span>{formatDate(post.publishedAt)}</span>
-              {post.readingTime && <span>{post.readingTime} min read</span>}
+            {/* ── Row 2: Meta + Share ── */}
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-b pb-6 text-sm">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-brand font-medium">{formatDate(post.publishedAt)}</span>
+                {post.readingTime && (
+                  <>
+                    <span className="text-border">·</span>
+                    <span className="text-brand/80">{post.readingTime} min read</span>
+                  </>
+                )}
+              </div>
+              <ShareButtons url={postUrl} title={post.title} compact />
             </div>
 
             {/* Body */}
@@ -110,28 +153,6 @@ export default async function PostPage({ params }: Props) {
               />
             )}
 
-            {/* Tags */}
-            {post.tags && post.tags.length > 0 && (
-              <div className="mt-10 flex flex-wrap gap-2 border-t pt-6">
-                {post.tags.map((tag) => (
-                  <span key={tag} className="rounded border px-2.5 py-0.5 text-xs text-muted-foreground">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Share */}
-            <div className="mt-8 border-t pt-6">
-              <ShareButtons url={postUrl} title={post.title} />
-            </div>
-
-            {/* Author */}
-            {post.author && (
-              <div className="mt-10 border-t pt-8">
-                <AuthorCard author={post.author} />
-              </div>
-            )}
           </div>
 
           {/* ── TOC sidebar ── */}

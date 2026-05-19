@@ -33,6 +33,12 @@ module.exports = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        brand: {
+          DEFAULT: 'hsl(var(--brand))',
+          dark: 'hsl(var(--brand-dark))',
+          glow: 'hsl(var(--brand-glow))',
+          fg: 'hsl(var(--brand-fg))',
+        },
       },
       typography: {
         DEFAULT: {

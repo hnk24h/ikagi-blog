@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { PostCard } from '@/components/blog/post-card'
 import { SearchInput } from '@/components/blog/search-input'
@@ -16,6 +16,11 @@ export function BlogClient({ initialPosts, categories }: Props) {
   const searchParams = useSearchParams()
   const [search, setSearch] = useState(searchParams.get('q') || '')
   const activeCategory = searchParams.get('category') || ''
+
+  // Sync when header search navigates to /blog?q=...
+  useEffect(() => {
+    setSearch(searchParams.get('q') || '')
+  }, [searchParams])
 
   const filtered = useMemo(() => {
     let result = initialPosts
