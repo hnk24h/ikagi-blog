@@ -3,10 +3,11 @@ import Image from 'next/image'
 import type { Metadata } from 'next'
 import { getPostBySlug, getAllPostSlugs, getRelatedPosts, getPostsByAuthor } from '@/lib/api/queries'
 import { urlFor } from '@/lib/api/image'
-import { RelatedPosts } from '@/components/post/related-posts'
+import { PostEndSection } from '@/components/post/post-end-section'
 import { ShareButtons } from '@/components/post/share-buttons'
 import { TableOfContents } from '@/components/post/table-of-contents'
 import { AuthorChip } from '@/components/post/author-chip'
+import { AuthorSidebar } from '@/components/post/author-sidebar'
 import { Container } from '@/components/layout/container'
 import { formatDate } from '@/lib/utils'
 import { siteConfig } from '@/config/site'
@@ -48,8 +49,8 @@ export default async function PostPage({ params }: Props) {
   const authorSlug = post.author?.slug?.current ?? ''
 
   const [related, authorPosts] = await Promise.all([
-    getRelatedPosts(post._id, categoryIds, 3, post.slug.current),
-    authorSlug ? getPostsByAuthor(authorSlug, 5) : Promise.resolve([]),
+    getRelatedPosts(post._id, categoryIds, 4, post.slug.current).catch(() => []),
+    authorSlug ? getPostsByAuthor(authorSlug, 6).catch(() => []) : Promise.resolve([]),
   ])
 
   const postUrl = `${siteConfig.url}/blog/${post.slug.current}`
@@ -74,7 +75,7 @@ export default async function PostPage({ params }: Props) {
         </div>
       )}
 
-      <Container size="xl" className="py-12">
+      <Container size="xl" className="py-8 sm:py-12">
         <div className="grid grid-cols-1 gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1fr)_240px]">
           {/* ── Main content ── */}
           <div className="min-w-0">
@@ -119,7 +120,7 @@ export default async function PostPage({ params }: Props) {
               )}
             </div>
 
-            <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+            <h1 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl xl:text-5xl">
               {post.title}
             </h1>
 
@@ -155,26 +156,30 @@ export default async function PostPage({ params }: Props) {
 
           </div>
 
-          {/* ── TOC sidebar ── */}
-          {headings.length > 0 && (
+          {/* ── TOC + Author sidebar ── */}
+          {(headings.length > 0 || post.author) && (
             <aside className="hidden lg:block">
               <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-lg border bg-muted/30 p-4">
-                <TableOfContents headings={headings} />
+                {headings.length > 0 && <TableOfContents headings={headings} />}
+                {post.author && (
+                  <AuthorSidebar
+                    author={post.author}
+                    posts={authorPosts}
+                    currentSlug={post.slug.current}
+                  />
+                )}
               </div>
             </aside>
           )}
         </div>
       </Container>
 
-      {/* Related */}
-      {related.length > 0 && (
-        <div className="border-t">
-          <Container className="py-12">
-            <h2 className="mb-8 text-xl font-bold">Related posts</h2>
-            <RelatedPosts posts={related} />
-          </Container>
-        </div>
-      )}
+      <PostEndSection
+        related={related}
+        authorPosts={authorPosts}
+        currentSlug={post.slug.current}
+        authorName={post.author?.name}
+      />
     </article>
   )
 }

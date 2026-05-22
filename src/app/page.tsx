@@ -97,9 +97,9 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="border-b py-20">
+      <section className="border-b py-12 sm:py-20">
         <Container>
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
             {/* Left — copy */}
             <div>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1.5 text-xs font-medium text-muted-foreground">
@@ -107,9 +107,9 @@ export default async function HomePage() {
                 Software Engineer · {siteConfig.author.location} 🇯🇵
               </div>
 
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.15]">
-                Writing about tech,<br />
-                life &amp; everything<br />
+              <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-[3.25rem] lg:leading-[1.15]">
+                Writing about tech,{' '}
+                life &amp; everything{' '}
                 in between.
               </h1>
 
@@ -143,9 +143,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── Identity strip ────────────────────────────────────────────────── */}
-      <section className="border-b bg-muted/30 py-14">
+      <section className="border-b bg-muted/30 py-10 sm:py-14">
         <Container>
-          <div className="grid gap-8 sm:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-3">
             {identity.map((item) => (
               <div key={item.title} className="flex flex-col gap-2">
                 <span className="text-2xl">{item.emoji}</span>
@@ -159,7 +159,7 @@ export default async function HomePage() {
 
       {/* ── Featured post ─────────────────────────────────────────────────── */}
       {featuredPost && (
-        <section className="border-b py-16">
+        <section className="border-b py-10 sm:py-16">
           <Container>
             <h2 className="mb-8 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               Featured
@@ -171,10 +171,10 @@ export default async function HomePage() {
 
       {/* ── Latest posts ──────────────────────────────────────────────────── */}
       {latest.length > 0 && (
-        <section className="border-b py-16">
+        <section className="border-b py-10 sm:py-16">
           <Container>
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Latest posts</h2>
+            <div className="mb-6 flex items-center justify-between sm:mb-8">
+              <h2 className="text-xl font-bold sm:text-2xl">Latest posts</h2>
               <Link href="/blog" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
                 View all <ArrowRight className="h-3 w-3" />
               </Link>
@@ -190,9 +190,9 @@ export default async function HomePage() {
 
       {/* ── Categories ────────────────────────────────────────────────────── */}
       {categories.length > 0 && (
-        <section className="py-16">
+        <section className="py-10 sm:py-16">
           <Container>
-            <h2 className="mb-8 text-2xl font-bold">Browse by topic</h2>
+            <h2 className="mb-6 text-xl font-bold sm:mb-8 sm:text-2xl">Browse by topic</h2>
             <div className="flex flex-wrap gap-3">
               {categories.map((cat) => (
                 <Link

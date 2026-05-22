@@ -79,7 +79,7 @@ export default async function NowPage() {
     <div className="min-h-screen">
       {/* ── Header ── */}
       <div className="border-b bg-card">
-        <Container size="xl" className="py-10">
+        <Container size="xl" className="py-8 sm:py-10">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -111,7 +111,7 @@ export default async function NowPage() {
         </Container>
       </div>
 
-      <Container size="xl" className="py-10 space-y-12">
+      <Container size="xl" className="py-8 sm:py-10 space-y-10 sm:space-y-12">
         {/* No data fallback */}
         {!now && (
           <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">

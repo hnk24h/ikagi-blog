@@ -89,7 +89,7 @@ export default function AboutPage() {
     <div className="min-h-screen">
       {/* ── CV Header ── */}
       <div className="border-b bg-card">
-        <Container size="xl" className="py-10">
+        <Container size="xl" className="py-8 sm:py-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             {/* Identity */}
             <div className="flex items-center gap-5">

@@ -7,6 +7,14 @@ const nextConfig = {
         hostname: 'cdn.sanity.io',
       },
       {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ui-avatars.com',
+      },
+      {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',
