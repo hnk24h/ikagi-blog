@@ -12,6 +12,8 @@ export const siteConfig = {
   },
   nav: [
     { label: 'Blog', href: '/blog' },
+    { label: 'Quiz', href: '/quiz' },
+    { label: 'Thi', href: '/exam' },
     { label: 'Now', href: '/now' },
     { label: 'About', href: '/about' },
   ],

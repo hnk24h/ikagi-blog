@@ -172,3 +172,60 @@ export async function getNowPage(): Promise<NowPage | null> {
   })
   return data?.data ?? null
 }
+
+// ─── Quiz ─────────────────────────────────────────────────────────────────────
+
+export type QuizSummary = {
+  id: number
+  title: string
+  slug: string
+  description: string | null
+  createdAt: string
+  author: { name: string; slug: string } | null
+  _count: { questions: number }
+}
+
+export async function getQuizzes(): Promise<QuizSummary[]> {
+  const data = await apiFetch<{ data: QuizSummary[] }>('/quizzes', {
+    next: { revalidate: 60 },
+  })
+  return data?.data ?? []
+}
+
+// ─── Exam ─────────────────────────────────────────────────────────────────────
+
+export type ExamSummary = {
+  id: number
+  title: string
+  slug: string
+  description: string | null
+  duration: number
+  shuffleQuestions: boolean
+  createdAt: string
+  author: { name: string; slug: string } | null
+  _count: { questions: number }
+}
+
+export type ExamDetail = Omit<ExamSummary, '_count'> & {
+  questions: {
+    id: number
+    question: string
+    explanation: string | null
+    questionType: string
+    options: { id: number; text: string; isCorrect: boolean }[]
+  }[]
+}
+
+export async function getExams(): Promise<ExamSummary[]> {
+  const data = await apiFetch<{ data: ExamSummary[] }>('/exams', {
+    next: { revalidate: 60 },
+  })
+  return data?.data ?? []
+}
+
+export async function getExamBySlug(slug: string): Promise<ExamDetail | null> {
+  const data = await apiFetch<ExamDetail>(`/exams/${slug}`, {
+    next: { revalidate: 3600 },
+  })
+  return data ?? null
+}
