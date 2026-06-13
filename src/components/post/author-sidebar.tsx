@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Github, Twitter, Globe } from 'lucide-react'
 import { urlFor } from '@/lib/api/image'
 import { formatDateShort } from '@/lib/utils'
+import AuthorAvatar from '@/components/ui/author-avatar'
 import type { Author, Post } from '@/types/blog'
 
 interface Props {
@@ -27,15 +28,7 @@ export function AuthorSidebar({ author, posts, currentSlug }: Props) {
         </p>
         <div className="flex items-start gap-3">
           {/* Avatar */}
-          {avatarUrl ? (
-            <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full ring-2 ring-border">
-              <Image src={avatarUrl} alt={author.name} fill className="object-cover" sizes="40px" />
-            </div>
-          ) : (
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white ring-2 ring-border">
-              {author.name[0]}
-            </div>
-          )}
+          <AuthorAvatar src={avatarUrl} name={author.name} size={40} className="ring-2 ring-border" />
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold leading-tight text-foreground">{author.name}</p>

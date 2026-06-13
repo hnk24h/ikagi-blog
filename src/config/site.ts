@@ -14,6 +14,7 @@ export const siteConfig = {
     { label: 'Blog', href: '/blog' },
     { label: 'Quiz', href: '/quiz' },
     { label: 'Thi', href: '/exam' },
+    { label: 'Mẹo', href: '/tips' },
     { label: 'Now', href: '/now' },
     { label: 'About', href: '/about' },
   ],

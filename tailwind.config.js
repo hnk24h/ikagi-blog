@@ -49,6 +49,25 @@ module.exports = {
             '--tw-prose-code': 'hsl(var(--foreground))',
             '--tw-prose-pre-bg': 'hsl(var(--muted))',
             maxWidth: 'none',
+            // Don't let prose reset gallery grids
+            '.image-gallery': {
+              display: 'grid',
+              margin: '1.5rem 0',
+            },
+            '.image-gallery figure': {
+              margin: '0',
+            },
+            '.image-gallery figure img': {
+              margin: '0',
+              borderRadius: '0.5rem',
+            },
+            '.image-block': {
+              margin: '1.5rem 0',
+            },
+            '.image-block img': {
+              margin: '0',
+              borderRadius: '0.5rem',
+            },
           },
         },
       },

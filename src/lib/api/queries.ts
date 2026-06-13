@@ -229,3 +229,27 @@ export async function getExamBySlug(slug: string): Promise<ExamDetail | null> {
   })
   return data ?? null
 }
+
+// ─── Tips ─────────────────────────────────────────────────────────────────────
+
+export type TipQuestion = {
+  id: number
+  question: string
+  tip: string
+  explanation: string | null
+  questionType: string
+  options: { id: number; text: string; isCorrect: boolean }[]
+  quiz: { id: number; title: string; slug: string }
+}
+
+export type TipGroup = {
+  quiz: { id: number; title: string; slug: string }
+  tips: TipQuestion[]
+}
+
+export async function getTips(): Promise<TipGroup[]> {
+  const data = await apiFetch<{ data: TipGroup[] }>('/tips', {
+    next: { revalidate: 60 },
+  })
+  return data?.data ?? []
+}

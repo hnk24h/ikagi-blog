@@ -25,6 +25,14 @@ const nextConfig = {
         hostname: 'cms.ikagi.site',
         pathname: '/storage/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.facebook.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.fbcdn.net',
+      },
     ],
   },
 }

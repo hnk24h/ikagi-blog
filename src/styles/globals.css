@@ -60,3 +60,118 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── Image Gallery layouts (from CMS rich text editor) ─────────────────────── */
+
+.image-gallery {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.image-gallery figure {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.image-gallery figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.image-gallery figcaption {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  padding: 0.25rem 0.5rem;
+  font-style: italic;
+}
+
+/* 2 equal columns */
+.image-gallery--two-col {
+  grid-template-columns: 1fr 1fr;
+}
+.image-gallery--two-col figure img {
+  aspect-ratio: 4/3;
+}
+
+/* 3 equal columns */
+.image-gallery--three-col {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.image-gallery--three-col figure img {
+  aspect-ratio: 1/1;
+}
+
+/* Hero (60%) + 2 stacked (40%) */
+.image-gallery--hero-pair {
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: 1fr 1fr;
+}
+.image-gallery--hero-pair figure:first-child {
+  grid-row: span 2;
+}
+.image-gallery--hero-pair figure img {
+  aspect-ratio: 4/3;
+}
+.image-gallery--hero-pair figure:first-child img {
+  aspect-ratio: unset;
+  height: 100%;
+}
+
+/* 2 portrait side by side + 1 wide below */
+.image-gallery--two-portrait {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+}
+.image-gallery--two-portrait figure:last-child {
+  grid-column: span 2;
+}
+.image-gallery--two-portrait figure:not(:last-child) img {
+  aspect-ratio: 3/4;
+}
+.image-gallery--two-portrait figure:last-child img {
+  aspect-ratio: 16/7;
+}
+
+/* Single image block sizes */
+.image-block {
+  margin: 1.5rem 0;
+}
+.image-block--full {
+  width: 100%;
+}
+.image-block img {
+  width: 100%;
+  border-radius: 0.5rem;
+  display: block;
+}
+.image-block figcaption {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .image-gallery--two-col,
+  .image-gallery--three-col,
+  .image-gallery--hero-pair,
+  .image-gallery--two-portrait {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .image-gallery--hero-pair figure:first-child,
+  .image-gallery--two-portrait figure:last-child {
+    grid-column: unset;
+    grid-row: unset;
+  }
+  .image-gallery figure img,
+  .image-gallery--two-portrait figure:not(:last-child) img {
+    aspect-ratio: 4/3;
+  }
+}

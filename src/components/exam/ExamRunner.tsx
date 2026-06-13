@@ -236,7 +236,7 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
                 <span className="text-xs font-semibold text-muted-foreground mb-2 block">
                   Câu {current + 1}/{questions.length}
                 </span>
-                <p className="font-semibold text-foreground leading-relaxed">{q.question}</p>
+                <p className="font-semibold text-foreground leading-relaxed whitespace-pre-line">{q.question}</p>
                 {multi && (
                   <span className="inline-flex mt-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
                     Chọn nhiều đáp án

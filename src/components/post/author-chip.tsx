@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Github, Twitter, Globe, X } from 'lucide-react'
 import { urlFor } from '@/lib/api/image'
+import AuthorAvatar from '@/components/ui/author-avatar'
 import type { Author, Post } from '@/types/blog'
 
 interface Props {
@@ -40,15 +41,7 @@ export function AuthorChip({ author, authorPosts, currentPostId }: Props) {
         className="flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted"
         aria-expanded={open}
       >
-        {avatarUrl ? (
-          <span className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full">
-            <Image src={avatarUrl} alt={author.name} fill className="object-cover" />
-          </span>
-        ) : (
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand text-[10px] font-bold text-brand-fg">
-            {author.name[0]}
-          </span>
-        )}
+        <AuthorAvatar src={avatarUrl} name={author.name} size={20} />
         <span>{author.name}</span>
         <svg
           className={`h-3 w-3 text-muted-foreground transition-transform ${open ? 'rotate-180' : ''}`}
@@ -65,15 +58,7 @@ export function AuthorChip({ author, authorPosts, currentPostId }: Props) {
           {/* Author header */}
           <div className="flex items-start justify-between gap-3 border-b p-4">
             <div className="flex gap-3">
-              {avatarUrl ? (
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border">
-                  <Image src={avatarUrl} alt={author.name} fill className="object-cover" />
-                </div>
-              ) : (
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-brand-dark text-xl font-bold text-brand-fg">
-                  {author.name[0]}
-                </span>
-              )}
+              <AuthorAvatar src={avatarUrl} name={author.name} size={48} />
               <div>
                 <p className="font-semibold">{author.name}</p>
                 <div className="mt-1.5 flex gap-3">

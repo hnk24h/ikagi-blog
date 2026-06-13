@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 type Option = { id: number; text: string; isCorrect: boolean };
-type Question = { id: number; question: string; explanation: string | null; questionType: string; options: Option[] };
+type Question = { id: number; question: string; explanation: string | null; tip: string | null; questionType: string; options: Option[] };
 
 export default function QuizPlayer({ questions }: { questions: Question[] }) {
   const [selected, setSelected] = useState<Map<number, Set<number>>>(() => new Map());
@@ -124,7 +124,7 @@ export default function QuizPlayer({ questions }: { questions: Question[] }) {
                   {isConfirmed ? (isRight ? "✓" : "✗") : qi + 1}
                 </span>
                 <div className="flex-1">
-                  <p className="font-semibold text-foreground leading-relaxed">{q.question}</p>
+                  <p className="font-semibold text-foreground leading-relaxed whitespace-pre-line">{q.question}</p>
                   {multi && (
                     <span className="inline-flex mt-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
                       Chọn nhiều đáp án
@@ -181,7 +181,17 @@ export default function QuizPlayer({ questions }: { questions: Question[] }) {
                   <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
                   </svg>
-                  <span><span className="font-semibold">Giải thích: </span>{q.explanation}</span>
+                  <span><span className="font-semibold">Giải thích: </span><span className="whitespace-pre-line">{q.explanation}</span></span>
+                </div>
+              )}
+
+              {/* Tip */}
+              {isConfirmed && q.tip && q.tip.trim() && (
+                <div className="flex gap-2 mt-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300">
+                  <svg className="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/><path d="M9 21h6M10 17v-1M14 17v-1"/>
+                  </svg>
+                  <span><span className="font-semibold">Mẹo: </span><span className="whitespace-pre-line">{q.tip}</span></span>
                 </div>
               )}
 

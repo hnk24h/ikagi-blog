@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/container";
 import QuizPlayer from "@/components/quiz/quiz-player";
 
 type Option = { id: number; text: string; isCorrect: boolean; order: number };
-type Question = { id: number; question: string; explanation: string | null; questionType: string; order: number; options: Option[] };
+type Question = { id: number; question: string; explanation: string | null; tip: string | null; questionType: string; order: number; options: Option[] };
 type Quiz = {
   id: number;
   title: string;
