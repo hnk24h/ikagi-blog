@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import RichHtml from "@/components/content/rich-html";
 
 type Option = { id: number; text: string; isCorrect: boolean };
 type Question = {
@@ -163,7 +164,7 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
                 </span>
                 <div>
                   <span className="text-xs text-muted-foreground mr-2">Câu {qi + 1}</span>
-                  <span className="font-semibold text-foreground text-sm leading-snug">{q.question}</span>
+                  <RichHtml html={q.question} className="mt-1 font-semibold text-foreground text-sm leading-snug" />
                 </div>
               </div>
               <div className="px-5 pb-4 bg-card space-y-1.5 pt-3">
@@ -177,14 +178,17 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
                       <span className={`w-4 h-4 flex-shrink-0 rounded-full border-2 flex items-center justify-center text-[9px] font-bold ${opt.isCorrect ? "border-green-500 bg-green-500 text-white" : wasSel ? "border-red-500 bg-red-500 text-white" : "border-muted-foreground/30"}`}>
                         {opt.isCorrect ? "✓" : wasSel ? "✗" : ""}
                       </span>
-                      <span className="text-foreground">{opt.text}</span>
+                      <RichHtml html={opt.text} className="flex-1 text-foreground leading-relaxed" />
                     </div>
                   );
                 })}
                 {q.explanation && (
                   <div className="flex gap-2 mt-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-sm text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300">
                     <svg className="shrink-0 mt-0.5" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    <span><strong>Giải thích: </strong>{q.explanation}</span>
+                    <div className="min-w-0 flex-1">
+                      <strong>Giải thích:</strong>
+                      <RichHtml html={q.explanation} className="mt-1 text-sm leading-relaxed" />
+                    </div>
                   </div>
                 )}
               </div>
@@ -236,7 +240,7 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
                 <span className="text-xs font-semibold text-muted-foreground mb-2 block">
                   Câu {current + 1}/{questions.length}
                 </span>
-                <p className="font-semibold text-foreground leading-relaxed whitespace-pre-line">{q.question}</p>
+                <RichHtml html={q.question} className="font-semibold text-foreground leading-relaxed" />
                 {multi && (
                   <span className="inline-flex mt-2 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
                     Chọn nhiều đáp án
@@ -275,7 +279,7 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
                   }`}>
                     {isSel && "✓"}
                   </span>
-                  <span className="text-foreground">{opt.text}</span>
+                  <RichHtml html={opt.text} className="flex-1 text-foreground leading-relaxed" />
                 </button>
               );
             })}
