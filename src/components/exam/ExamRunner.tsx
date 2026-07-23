@@ -37,13 +37,15 @@ function formatTime(seconds: number) {
 
 export default function ExamRunner({ questions: rawQuestions, duration, shuffleQuestions }: ExamRunnerProps) {
   const [phase, setPhase] = useState<"intro" | "exam" | "result">("intro");
-  const [questions] = useState<Question[]>(() =>
+  const [allQuestions] = useState<Question[]>(() =>
     shuffleQuestions ? shuffleArray(rawQuestions) : rawQuestions
   );
+  const [questions, setQuestions] = useState<Question[]>(() => allQuestions);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<AnswerMap>(new Map());
   const [timeLeft, setTimeLeft] = useState(duration * 60);
   const [flagged, setFlagged] = useState<Set<number>>(new Set()); // flagged question indices
+  const [resultFilter, setResultFilter] = useState<"all" | "wrong">("all");
 
   const isMultiple = (q: Question) => q.questionType === "multiple";
 
@@ -80,6 +82,17 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
   };
 
   const submit = useCallback(() => setPhase("result"), []);
+
+  const resetExam = useCallback((nextQuestions?: Question[]) => {
+    const targetQuestions = nextQuestions ?? allQuestions;
+    setQuestions(targetQuestions);
+    setPhase("intro");
+    setAnswers(new Map());
+    setTimeLeft(Math.max(60, Math.ceil((duration * 60 * targetQuestions.length) / allQuestions.length)));
+    setFlagged(new Set());
+    setCurrent(0);
+    setResultFilter("all");
+  }, [allQuestions, duration]);
 
   // Scoring
   const getScore = () => {
@@ -129,6 +142,12 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
     const score = getScore();
     const scorePct = Math.round((score / questions.length) * 100);
     const timeUsed = duration * 60 - timeLeft;
+    const wrongQuestions = questions.filter((q) => {
+      const sel = answers.get(q.id) ?? new Set();
+      const rightIds = new Set(q.options.filter((o) => o.isCorrect).map((o) => o.id));
+      return sel.size !== rightIds.size || [...sel].some((id) => !rightIds.has(id));
+    });
+    const reviewQuestions = resultFilter === "wrong" ? wrongQuestions : questions;
 
     return (
       <div className="space-y-6">
@@ -151,8 +170,35 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
         </div>
 
         {/* Answer review */}
-        <h3 className="font-semibold text-foreground">Xem lại đáp án</h3>
-        {questions.map((q, qi) => {
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="font-semibold text-foreground">Xem lại đáp án</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {resultFilter === "wrong"
+                ? `Đang hiển thị ${wrongQuestions.length} câu cần xem lại.`
+                : `Hiển thị toàn bộ ${questions.length} câu đã làm.`}
+            </p>
+          </div>
+          <div className="inline-flex items-center rounded-xl border border-border bg-card p-1">
+            <button
+              type="button"
+              onClick={() => setResultFilter("all")}
+              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${resultFilter === "all" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Tất cả
+            </button>
+            <button
+              type="button"
+              onClick={() => setResultFilter("wrong")}
+              disabled={wrongQuestions.length === 0}
+              className={`px-3 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-40 ${resultFilter === "wrong" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              Câu sai ({wrongQuestions.length})
+            </button>
+          </div>
+        </div>
+        {reviewQuestions.map((q) => {
+          const qi = questions.findIndex((item) => item.id === q.id);
           const sel = answers.get(q.id) ?? new Set();
           const rightIds = new Set(q.options.filter((o) => o.isCorrect).map((o) => o.id));
           const isRight = sel.size === rightIds.size && [...sel].every((id) => rightIds.has(id));
@@ -196,13 +242,29 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
           );
         })}
 
-        <button
-          type="button"
-          onClick={() => { setPhase("intro"); setAnswers(new Map()); setTimeLeft(duration * 60); setFlagged(new Set()); setCurrent(0); }}
-          className="w-full py-3 border border-border rounded-2xl text-sm text-muted-foreground hover:bg-muted/50 transition-colors"
-        >
-          Làm lại
-        </button>
+        {reviewQuestions.length === 0 && (
+          <div className="rounded-2xl border border-border bg-card px-5 py-6 text-sm text-muted-foreground">
+            Không có câu sai để xem lại.
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => resetExam()}
+            className="flex-1 py-3 border border-border rounded-2xl text-sm text-muted-foreground hover:bg-muted/50 transition-colors"
+          >
+            Làm lại toàn bộ
+          </button>
+          <button
+            type="button"
+            onClick={() => resetExam(wrongQuestions)}
+            disabled={wrongQuestions.length === 0}
+            className="flex-1 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-40"
+          >
+            Làm lại câu sai
+          </button>
+        </div>
       </div>
     );
   }
