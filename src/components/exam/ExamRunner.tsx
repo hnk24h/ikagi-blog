@@ -216,22 +216,6 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
     <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
       {/* Main question area */}
       <div className="flex-1 min-w-0">
-        {/* Timer + progress bar */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <span className={`font-mono font-bold text-base ${timerDanger ? "text-red-500 animate-pulse" : timerWarn ? "text-amber-500" : "text-foreground"}`}>
-              {formatTime(timeLeft)}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>{answeredCount}/{questions.length} đã trả lời</span>
-            <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
-              <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${pct}%` }} />
-            </div>
-          </div>
-        </div>
-
         {/* Question card */}
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <div className="px-6 pt-5 pb-4 border-b border-border">
@@ -327,8 +311,24 @@ export default function ExamRunner({ questions: rawQuestions, duration, shuffleQ
       </div>
 
       {/* Right sidebar: question navigator */}
-      <div className="lg:w-52 flex-shrink-0">
-        <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="lg:w-64 lg:self-start lg:sticky lg:top-24 flex-shrink-0">
+        <div className="rounded-2xl border border-border bg-card p-4 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+          <div className="pb-4 mb-4 border-b border-border">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span className={`font-mono font-bold text-base ${timerDanger ? "text-red-500 animate-pulse" : timerWarn ? "text-amber-500" : "text-foreground"}`}>
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <span>{answeredCount}/{questions.length} đã trả lời</span>
+              <span>{Math.round(pct)}%</span>
+            </div>
+            <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+
           <p className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Điều hướng</p>
           <div className="grid grid-cols-5 gap-1.5">
             {questions.map((question, idx) => {
